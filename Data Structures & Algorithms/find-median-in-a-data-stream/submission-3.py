@@ -1,0 +1,30 @@
+class MedianFinder:
+
+    def __init__(self):
+        self.large = []  # min heap for top half values
+        self.small = []  # max heap for bottom half values
+
+    # core intuition -- add the value only once, this value never should
+    # be absent from both heaps, as it will affect / could be a future median.
+    def addNum(self, num: int) -> None:
+        if self.large and num >= self.large[0]:
+            heapq.heappush(self.large, num)
+        else:
+            heapq.heappush(self.small, -num)
+
+        if len(self.large) - len(self.small) > 1:
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+        
+        if len(self.small) - len(self.large) > 1:
+            val = heapq.heappop(self.small)
+            heapq.heappush(self.large, -val)
+    def findMedian(self) -> float:
+        if len(self.small) > len(self.large):
+            return -self.small[0]
+        elif len(self.small) < len(self.large):
+            return self.large[0]
+        else:
+            return (-self.small[0] + self.large[0]) / 2
+
+        
